@@ -18,4 +18,16 @@ const trade=await call('/api/submissions',{kind:'trade',data:{...customer,materi
 const available=await call('/api/submissions?event=pune-01');const slot=['11:00','11:30','12:00','12:30','14:00','14:30','15:00','15:30','16:00','16:30'].find(t=>!available.data.booked.includes(t));
 if(slot){const booking={kind:'booking',data:{name:'QA API Sample',phone:'9000000000',email:'qa-api@example.com',eventId:'pune-01',slot,item:'Sample denim jacket',notes:'QA test only',consent:true}};const b=await call('/api/submissions',booking);ok(b.status===201,'booking reserves selected time');const conflict=await call('/api/submissions',booking);ok(conflict.status===400,'duplicate slot rejected atomically');}
 const admin=await call('/api/admin');ok(admin.status===401,'operations dashboard rejects unauthenticated access');
+if(process.env.ADMIN_SECRET){
+ const validTrade=await call('/api/submissions',{kind:'trade',data:{...customer,material:'Heavy Vintage Denim',condition:'Like new',weight:2,method:'pickup',date:'2099-10-10',consent:true}});ok(validTrade.status===201,'eligible trade request saved');
+ const visitor=cookie;
+ const login=await call('/api/admin',{action:'login',secret:process.env.ADMIN_SECRET});ok(login.status===200,'private studio login succeeds');
+ const studio=await call('/api/admin');ok(studio.data.submissions.some(s=>s.id===validTrade.data.id),'studio sees saved visitor request');
+ const approve={action:'review',id:validTrade.data.id,status:'accepted',coins:100};
+ ok((await call('/api/admin',approve)).status===200,'studio approves demo trade reward');
+ ok((await call('/api/admin',approve)).status===400,'repeat approval cannot award rewards twice');
+ const wallet=await call('/api/account',null,{Cookie:visitor});ok(wallet.data.account.coins===100,'approved rewards reach original visitor wallet');
+ for(const request of studio.data.submissions.filter(s=>s.kind==='booking'&&s.data.email==='qa-api@example.com'&&s.status!=='cancelled'))await call('/api/admin',{action:'review',id:request.id,status:'cancelled'});
+ await call('/api/admin',{action:'logout'});
+}
 console.log(`Verified ${checks} API checks against ${base}. Test references created with QA API Sample.`);

@@ -2,6 +2,8 @@
 
 A working circular-fashion sample storefront: Indian streetwear, rescued denim, heirloom textiles, and a bold editorial identity.
 
+[Live website](https://sutra-rebind.vercel.app) · [Studio dashboard](https://sutra-rebind.vercel.app/admin) · [GitHub repository](https://github.com/ArinGupta25/sutra-rebind)
+
 ## Included
 
 - Six illustrated sample products, search/category/sort, sizes, size guide, 70/30 material visualizer and persistent shopping bag.
