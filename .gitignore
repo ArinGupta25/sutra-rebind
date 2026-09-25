@@ -1,0 +1,14 @@
+node_modules/
+.next/
+.vercel/
+.env*
+!.env.example
+*.tsbuildinfo
+work/
+
+.vercel
+.env*
+!.env.example
+scripts/provision-env.mjs
+scripts/prepare-images.mjs
+public/images/campaign.png

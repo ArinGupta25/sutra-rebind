@@ -1,0 +1,42 @@
+{
+  "name": "sutra-rebind",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --hostname 0.0.0.0",
+    "build": "next build",
+    "start": "next start --hostname 0.0.0.0",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "db:setup": "node --env-file=.env.local --import tsx scripts/setup-db.ts"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "lucide-react": "latest",
+    "motion": "latest",
+    "zod": "latest",
+    "postgres": "latest",
+    "stripe": "latest",
+    "@zxing/browser": "latest",
+    "qrcode": "latest",
+    "@radix-ui/react-dialog": "latest"
+  },
+  "devDependencies": {
+    "typescript": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@types/qrcode": "latest",
+    "tsx": "latest",
+    "tailwindcss": "latest",
+    "@tailwindcss/postcss": "latest",
+    "vercel": "latest"
+  },
+  "packageManager": "pnpm@11.19.0",
+  "engines": {
+    "node": "24.x"
+  }
+}
