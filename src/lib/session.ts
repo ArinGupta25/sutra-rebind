@@ -18,5 +18,5 @@ export function apiError(error:unknown){
  console.error('Sutra API error:',error instanceof Error?error.name:'unknown');
  return Response.json({error:'We could not complete that request. Please try again.'},{status:500});
 }
-export async function isAdmin(){const token=(await cookies()).get('sutra_admin')?.value;return !!token&&token===sign('admin');}
-export async function adminLogin(secret:string){const expected=process.env.ADMIN_SECRET;if(!expected||Buffer.byteLength(secret)!==Buffer.byteLength(expected)||!timingSafeEqual(Buffer.from(secret),Buffer.from(expected)))return false;(await cookies()).set('sutra_admin',sign('admin'),{httpOnly:true,secure:process.env.NODE_ENV==='production',sameSite:'strict',path:'/',maxAge:3600});return true;}
+export async function isAdmin(){const token=(await cookies()).get('sutra_admin')?.value;if(!token)return false;const [expires,sig]=token.split('.');const time=Number(expires);return Number.isFinite(time)&&time>Date.now()&&time<=Date.now()+3600000&&/^[a-f0-9]{64}$/.test(sig??'')&&timingSafeEqual(Buffer.from(sig),Buffer.from(sign('admin:'+expires)));}
+export async function adminLogin(secret:string){const expected=process.env.ADMIN_SECRET;if(!expected||Buffer.byteLength(secret)!==Buffer.byteLength(expected)||!timingSafeEqual(Buffer.from(secret),Buffer.from(expected)))return false;const expires=String(Date.now()+3600000);(await cookies()).set('sutra_admin',`${expires}.${sign('admin:'+expires)}`,{httpOnly:true,secure:process.env.NODE_ENV==='production',sameSite:'strict',path:'/',maxAge:3600});return true;}
